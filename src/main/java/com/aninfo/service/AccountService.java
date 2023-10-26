@@ -3,7 +3,9 @@ package com.aninfo.service;
 import com.aninfo.exceptions.DepositNegativeSumException;
 import com.aninfo.exceptions.InsufficientFundsException;
 import com.aninfo.model.Account;
+import com.aninfo.model.Transaction;
 import com.aninfo.repository.AccountRepository;
+import com.aninfo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,8 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private TransactionRepository transactionRepository;
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
@@ -38,28 +41,35 @@ public class AccountService {
     }
 
     @Transactional
-    public Account withdraw(Long cbu, Double sum) {
-        Account account = accountRepository.findAccountByCbu(cbu);
-
-        if (account.getBalance() < sum) {
+    public Account withdraw(Transaction transaction) {
+        Account account = accountRepository.findAccountByCbu(transaction.getTransactionOwner());
+        if (account.getBalance() < -transaction.getCharge()) {
             throw new InsufficientFundsException("Insufficient funds");
         }
-
-        account.setBalance(account.getBalance() - sum);
+        var transac = transactionRepository.save(transaction);
+        account.addTransaction(transac);
+        accountRepository.save(account);
+        return account;
+    }
+    @Transactional
+    public Account deposit(Transaction transaction) {
+        if (transaction.getCharge() <= 0) {
+            throw new DepositNegativeSumException("Must deposit a positive sum");
+        }
+        var transac = transactionRepository.save(transaction);
+        Account account = accountRepository.findAccountByCbu(transac.getTransactionOwner());
+        account.addTransaction(transac);
         accountRepository.save(account);
 
         return account;
     }
-
     @Transactional
-    public Account deposit(Long cbu, Double sum) {
-
-        if (sum <= 0) {
+    public Account deposit(Transaction transaction, Account account) {
+        if (transaction.getCharge() <= 0) {
             throw new DepositNegativeSumException("Cannot deposit negative sums");
         }
-
-        Account account = accountRepository.findAccountByCbu(cbu);
-        account.setBalance(account.getBalance() + sum);
+        var transac = transactionRepository.save(transaction);
+        account.addTransaction(transac);
         accountRepository.save(account);
 
         return account;
