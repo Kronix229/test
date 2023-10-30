@@ -65,7 +65,7 @@ public class AccountService {
     }
     @Transactional
     public Account deposit(Transaction transaction, Account account) {
-        if (transaction.getCharge() <= 0) {
+        if (transaction.getCharge() < 0) {
             throw new DepositNegativeSumException("Cannot deposit negative sums");
         }
         var transac = transactionRepository.save(transaction);

@@ -1,6 +1,7 @@
 package com.aninfo.integration.cucumber;
 
 import com.aninfo.Memo1BankApp;
+import com.aninfo.exceptions.DepositNegativeSumException;
 import com.aninfo.model.Account;
 import com.aninfo.model.Deposit;
 import com.aninfo.model.Transaction;
@@ -18,16 +19,23 @@ public class AccountIntegrationServiceTest {
     AccountService accountService;
 
     Account createAccount(Double balance) {
-        return accountService.createAccount(new Account());
+        if (balance < 0) {
+            throw new DepositNegativeSumException("Account cannot be created with negative balance");
+        }
+        var account = new Account(balance);
+        var acc = accountService.createAccount(account);
+        var transaction = new Deposit(balance, account.getCbu());
+        var account1 = accountService.deposit(transaction, acc);
+        return account1;
     }
 
     Account withdraw(Account account, Double sum) {
-        var transaction = new Withdraw();
+        var transaction = new Withdraw(-sum, account.getCbu());
         return accountService.withdraw(transaction);
     }
 
     Account deposit(Account account, Double sum) {
-        var transaction = new Deposit();
+        var transaction = new Deposit(sum, account.getCbu());
         return accountService.deposit(transaction);
     }
 
