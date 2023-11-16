@@ -10,8 +10,6 @@ import org.junit.Test;
 import proyecto.model.Estado;
 import proyecto.model.Proyecto;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,7 +17,7 @@ import java.time.format.DateTimeParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AccountOperationsTest extends ProyectoIntegrationServiceTest {
+public class ProyectoTest extends ProyectoIntegrationServiceTest {
 
     private Proyecto proyecto;
 

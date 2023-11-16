@@ -1,13 +1,7 @@
 package com.aninfo.integration.cucumber;
 
-import org.springframework.web.bind.annotation.RequestParam;
-import proyecto.Memo1BankApp;
-import proyecto.exceptions.DepositNegativeSumException;
-import proyecto.model.Account;
-import proyecto.model.Deposit;
+import proyecto.ProyectoApp;
 import proyecto.model.Proyecto;
-import proyecto.model.Withdraw;
-import proyecto.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -18,14 +12,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-@ContextConfiguration(classes = Memo1BankApp.class)
+@ContextConfiguration(classes = ProyectoApp.class)
 @WebAppConfiguration
-public class AccountIntegrationServiceTest {
+public class ProyectoIntegrationServiceTest {
 
     @Autowired
     ProyectoService proyectoService;
 
-    Proyecto createAccount(String nombre, String descripcion, String fechaFinalizacionEsperada) {
+    Proyecto crearProyecto(String nombre, String descripcion, String fechaFinalizacionEsperada) {
         var formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         LocalDateTime fecha;
         try {
@@ -36,16 +30,6 @@ public class AccountIntegrationServiceTest {
         var proyecto = new Proyecto(nombre, descripcion, fecha);
         var proyecto1 = proyectoService.createProyecto(proyecto);
         return proyecto1;
-    }
-
-    Account withdraw(Account account, Double sum) {
-        var transaction = new Withdraw(-sum, account.getCbu());
-        return proyectoService.withdraw(transaction);
-    }
-
-    Account deposit(Account account, Double sum) {
-        var transaction = new Deposit(sum, account.getCbu());
-        return proyectoService.deposit(transaction);
     }
 
 }
