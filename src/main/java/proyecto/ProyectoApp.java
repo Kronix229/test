@@ -31,7 +31,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @RestController
 @SpringBootApplication
 @EnableSwagger2
-public class Memo1BankApp {
+public class ProyectoApp {
 
 	@Autowired
 	private ProyectoService proyectoService;
@@ -40,7 +40,7 @@ public class Memo1BankApp {
 
 
 	public static void main(String[] args) {
-		SpringApplication.run(Memo1BankApp.class, args);
+		SpringApplication.run(ProyectoApp.class, args);
 	}
 
 	@PostMapping("/proyectos/{nombre}")
